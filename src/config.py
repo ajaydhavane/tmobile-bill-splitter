@@ -5,7 +5,7 @@ from pathlib import Path
 USERS_FILE = Path("data/users.json")
 
 
-def load_config():
+def load_config() -> dict:
     if not USERS_FILE.exists():
         USERS_FILE.write_text(json.dumps({"family_manager": {}, "users": {}}, indent=2))
     return json.loads(USERS_FILE.read_text())
@@ -22,9 +22,9 @@ def format_phone(phone: str) -> str:
     return phone
 
 
-def valid_phone(phone: str):
+def valid_phone(phone: str) -> bool:
     return len(re.sub(r"\D", "", phone)) == 10
 
 
-def valid_email(email: str):
+def valid_email(email: str) -> bool:
     return bool(re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email))

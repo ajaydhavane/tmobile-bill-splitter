@@ -6,7 +6,7 @@ from src.mail import Mail, build_email_html
 from src.parser import parse_bills
 
 
-def update_bill_totals():
+def update_bill_totals() -> None:
     if "bill_editor" in st.session_state and "bill_df" in st.session_state:
         edits = st.session_state["bill_editor"]["edited_rows"]
         df = st.session_state["bill_df"]
@@ -20,12 +20,12 @@ def update_bill_totals():
         st.session_state["bill_df"] = df
 
 
-def clear_bill_data():
+def clear_bill_data() -> None:
     if "bill_df" in st.session_state:
         del st.session_state["bill_df"]
 
 
-def render_sidebar(config):
+def render_sidebar(config: dict) -> None:
     with st.sidebar:
         st.header("⚙️ Settings")
 
@@ -44,7 +44,7 @@ def render_sidebar(config):
                 key="mgr_pass",
             )
             st.caption(
-                "[How do I get an App Password?](https://support.google.com/accounts/answer/185833)"
+                "[How do I get an App Password?](https://support.google.com/accounts/answer/185833)",
             )
             if st.button("💾 Save Manager", width="stretch"):
                 config["family_manager"] = {
@@ -94,26 +94,25 @@ def render_sidebar(config):
 
             st.markdown("**Add New User**")
             n_phone = st.text_input(
-                "Phone", key="new_phone", placeholder="(123) 456-7890"
+                "Phone", key="new_phone", placeholder="(123) 456-7890",
             )
             n_name = st.text_input("Name", key="new_name", placeholder="Name")
             n_email = st.text_input(
-                "Email", key="new_email", placeholder="email@example.com"
+                "Email", key="new_email", placeholder="email@example.com",
             )
 
-            if st.button("➕ Add User", width="stretch"):
-                if n_phone and n_name:
-                    if not valid_phone(n_phone) or not valid_email(n_email):
-                        st.error("Invalid phone number or email.")
-                    else:
-                        formatted_phone = format_phone(n_phone)
-                        config["users"][formatted_phone] = {
-                            "name": n_name,
-                            "email": n_email,
-                        }
-                        save_config(config)
-                        clear_bill_data()
-                        st.rerun()
+            if st.button("➕ Add User", width="stretch") and n_phone and n_name:
+                if not valid_phone(n_phone) or not valid_email(n_email):
+                    st.error("Invalid phone number or email.")
+                else:
+                    formatted_phone = format_phone(n_phone)
+                    config["users"][formatted_phone] = {
+                        "name": n_name,
+                        "email": n_email,
+                    }
+                    save_config(config)
+                    clear_bill_data()
+                    st.rerun()
 
             if st.button("💾 Save All Changes", width="stretch"):
                 new_users = {}
@@ -126,10 +125,10 @@ def render_sidebar(config):
                     formatted_phone = format_phone(raw_phone)
                     new_users[formatted_phone] = {
                         "name": st.session_state.get(
-                            f"name_{phone}", info.get("name", "")
+                            f"name_{phone}", info.get("name", ""),
                         ),
                         "email": st.session_state.get(
-                            f"email_{phone}", info.get("email", "")
+                            f"email_{phone}", info.get("email", ""),
                         ),
                     }
                 config["users"] = new_users
@@ -138,9 +137,9 @@ def render_sidebar(config):
                 st.rerun()
 
 
-def main():
+def main() -> None:
     st.set_page_config(
-        page_title="T-Mobile Bill Splitter", page_icon="🧾", layout="wide"
+        page_title="T-Mobile Bill Splitter", page_icon="🧾", layout="wide",
     )
     try:
         config = load_config()
