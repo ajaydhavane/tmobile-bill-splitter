@@ -93,26 +93,24 @@ def render_sidebar(config: dict) -> None:
             st.divider()
 
             st.markdown("**Add New User**")
-            n_phone = st.text_input(
-                "Phone", key="new_phone", placeholder="(123) 456-7890",
-            )
-            n_name = st.text_input("Name", key="new_name", placeholder="Name")
-            n_email = st.text_input(
-                "Email", key="new_email", placeholder="email@example.com",
-            )
+            with st.form("add_user_form", clear_on_submit=True):
+                n_phone = st.text_input("Phone", placeholder="(123) 456-7890")
+                n_name = st.text_input("Name", placeholder="Name")
+                n_email = st.text_input("Email", placeholder="email@example.com")
+                submit = st.form_submit_button("➕ Add User", width="stretch")
 
-            if st.button("➕ Add User", width="stretch") and n_phone and n_name:
-                if not valid_phone(n_phone) or not valid_email(n_email):
-                    st.error("Invalid phone number or email.")
-                else:
-                    formatted_phone = format_phone(n_phone)
-                    config["users"][formatted_phone] = {
-                        "name": n_name,
-                        "email": n_email,
-                    }
-                    save_config(config)
-                    clear_bill_data()
-                    st.rerun()
+                if submit and n_phone and n_name:
+                    if not valid_phone(n_phone) or not valid_email(n_email):
+                        st.error("Invalid phone number or email.")
+                    else:
+                        formatted_phone = format_phone(n_phone)
+                        config["users"][formatted_phone] = {
+                            "name": n_name,
+                            "email": n_email,
+                        }
+                        save_config(config)
+                        clear_bill_data()
+                        st.rerun()
 
             if st.button("💾 Save All Changes", width="stretch"):
                 new_users = {}
