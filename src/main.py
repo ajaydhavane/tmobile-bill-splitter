@@ -1,9 +1,9 @@
 import pandas as pd
 import streamlit as st
 
-from src.config import format_phone, load_config, save_config, valid_email, valid_phone
-from src.mail import Mail, build_email_html
-from src.parser import parse_bills
+from config import format_phone, load_config, save_config, valid_email, valid_phone
+from mail import Mail, build_email_html
+from parser import parse_bills
 
 
 def update_bill_totals() -> None:

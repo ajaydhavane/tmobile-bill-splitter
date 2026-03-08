@@ -7,6 +7,9 @@ if %errorlevel% neq 0 (
 )
 
 echo Do not close this window until you are done using the app.
-uv sync >nul 2>&1
+
 uv run streamlit run main.py >nul
+
+echo.
+echo Process finished. You can close this window.
 pause
