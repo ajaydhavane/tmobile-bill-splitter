@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 
 from config import format_phone, load_config, save_config, valid_email, valid_phone
-from mail import Mail, build_email_html
+from mail import build_email_html, send_email
 from parser import parse_bills
 
 
@@ -123,10 +123,12 @@ def render_sidebar(config: dict) -> None:
                     formatted_phone = format_phone(raw_phone)
                     new_users[formatted_phone] = {
                         "name": st.session_state.get(
-                            f"name_{phone}", info.get("name", ""),
+                            f"name_{phone}",
+                            info.get("name", ""),
                         ),
                         "email": st.session_state.get(
-                            f"email_{phone}", info.get("email", ""),
+                            f"email_{phone}",
+                            info.get("email", ""),
                         ),
                     }
                 config["users"] = new_users
@@ -137,7 +139,9 @@ def render_sidebar(config: dict) -> None:
 
 def main() -> None:
     st.set_page_config(
-        page_title="T-Mobile Bill Splitter", page_icon="🧾", layout="wide",
+        page_title="T-Mobile Bill Splitter",
+        page_icon="🧾",
+        layout="wide",
     )
     try:
         config = load_config()
@@ -221,10 +225,9 @@ def main() -> None:
             with st.expander("Preview Email"):
                 st.markdown(full_html, unsafe_allow_html=True)
 
-            if st.button("🚀 Send Emails to Everyone", width="stretch"):
+            if st.button("🚀 Send email to all users", width="stretch"):
                 with st.spinner("Dispatching..."):
-                    mailer = Mail(config, subject, full_html)
-                    success, msg = mailer.send()
+                    success, msg = send_email(config, subject, full_html)
                     if success:
                         st.success(f"Sent: {msg}")
                     else:
